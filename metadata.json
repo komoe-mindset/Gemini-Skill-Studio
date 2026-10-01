@@ -2,5 +2,7 @@
   "name": "Gemini Spark Skill Architect & Studio",
   "description": "Mobile-first developer studio and architect for building, validating, and packaging Gemini Spark Agent Skills with bilingual Myanmar and English guidance, 8-agent loop simulator, and instant ZIP export.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -144,7 +144,7 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
                 setSimLogs([]);
               }}
               aria-label="Close simulation terminal"
-              className="text-slate-300 hover:text-white text-xs px-2.5 py-1 rounded bg-slate-900 border border-slate-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+              className="text-slate-300 hover:text-white text-xs px-2.5 py-1 rounded bg-slate-900 border border-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-950"
             >
               Close
             </button>
@@ -319,7 +319,7 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
                   type="button"
                   onClick={handleCopyCode}
                   aria-label="Copy step code example"
-                  className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+                  className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-950"
                 >
                   <Copy width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                   <span>Copy</span>

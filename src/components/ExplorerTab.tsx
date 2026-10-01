@@ -208,8 +208,8 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({
               <button
                 type="button"
                 onClick={handleCopy}
-                aria-label="Copy blueprint code template"
-                className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+                aria-label="Copy blueprint code template to clipboard"
+                className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               >
                 <Copy width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                 <span>Copy Blueprint</span>

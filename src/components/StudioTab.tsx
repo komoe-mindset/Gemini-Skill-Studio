@@ -235,7 +235,8 @@ export const StudioTab: React.FC<StudioTabProps> = ({
           <button
             type="button"
             onClick={onResetEmpty}
-            className="text-xs text-slate-300 hover:text-rose-400 px-3 py-2 rounded-xl border border-slate-700/80 bg-slate-950 hover:bg-slate-800 transition min-h-[40px] whitespace-nowrap active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            aria-label="Reset workspace to blank skill template"
+            className="text-xs text-slate-300 hover:text-rose-400 px-3 py-2 rounded-xl border border-slate-700/80 bg-slate-950 hover:bg-slate-800 transition min-h-[40px] whitespace-nowrap active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
             {t.clearReset}
           </button>
@@ -506,7 +507,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     type="button"
                     onClick={() => setFontSize((prev) => Math.max(11, prev - 1))}
                     aria-label="Decrease font size"
-                    className="text-[10px] text-slate-300 hover:text-white px-1.5 py-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded"
+                    className="text-[10px] text-slate-300 hover:text-white px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900 rounded"
                   >
                     A-
                   </button>
@@ -517,7 +518,7 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                     type="button"
                     onClick={() => setFontSize((prev) => Math.min(18, prev + 1))}
                     aria-label="Increase font size"
-                    className="text-[10px] text-slate-300 hover:text-white px-1.5 py-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 rounded"
+                    className="text-[10px] text-slate-300 hover:text-white px-1.5 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900 rounded"
                   >
                     A+
                   </button>
@@ -644,13 +645,15 @@ export const StudioTab: React.FC<StudioTabProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 hover:bg-slate-800 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                  aria-label="Cancel creating new file"
+                  className="px-4 py-2 rounded-xl border border-slate-700 text-xs text-slate-200 hover:bg-slate-800 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white shadow-lg shadow-cyan-600/30 min-h-[40px] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                  aria-label="Confirm creation of new skill file"
+                  className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white shadow-lg shadow-cyan-600/30 min-h-[40px] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                 >
                   Create File
                 </button>

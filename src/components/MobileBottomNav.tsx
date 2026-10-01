@@ -62,8 +62,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               id={`mobtab-${tab.id}`}
               aria-selected={isActive}
               aria-controls={`panel-${tab.id}`}
+              aria-label={`Switch to ${tab.labelEn} tab (${tab.labelMy})`}
               onClick={() => onTabChange(tab.id)}
-              className={`flex flex-col items-center justify-center min-h-[44px] py-1 transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
+              className={`flex flex-col items-center justify-center min-h-[44px] py-1 transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-inset ${
                 isActive
                   ? 'text-cyan-400 font-semibold'
                   : 'text-slate-300 hover:text-slate-100'

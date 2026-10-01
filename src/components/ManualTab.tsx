@@ -243,7 +243,7 @@ networks:
                         type="button"
                         onClick={() => handleCopy(sec.sampleCode)}
                         aria-label={`Copy ${sec.path} code sample`}
-                        className="text-slate-300 hover:text-white text-[11px] flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+                        className="text-slate-300 hover:text-white text-[11px] flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-950"
                       >
                         <Copy width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                         <span>Copy</span>
@@ -252,7 +252,7 @@ networks:
                         type="button"
                         onClick={() => onSendToStudio(sec.path, sec.sampleCode)}
                         aria-label={`Send ${sec.path} to Studio Editor`}
-                        className="text-cyan-300 hover:text-cyan-200 text-[11px] flex items-center gap-1 bg-cyan-950 border border-cyan-800 px-2 py-0.5 rounded font-mono active:scale-95 transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
+                        className="text-cyan-300 hover:text-cyan-200 text-[11px] flex items-center gap-1 bg-cyan-950 border border-cyan-800 px-2 py-0.5 rounded font-mono active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-950"
                       >
                         <span>Send to Studio</span>
                         <ArrowUpRight width={12} height={12} className="w-3 h-3" aria-hidden="true" />
