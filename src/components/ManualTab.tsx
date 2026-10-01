@@ -29,7 +29,7 @@ export const ManualTab: React.FC<ManualTabProps> = ({
       subtitle: 'YAML Frontmatter + Step-by-Step Orchestration',
       badge: 'Root Directory Only',
       badgeColor: 'bg-cyan-950 border-cyan-800 text-cyan-300',
-      icon: <FileCode className="w-5 h-5 text-cyan-400" />,
+      icon: <FileCode width={20} height={20} className="w-5 h-5 text-cyan-400" aria-hidden="true" />,
       borderHover: 'border-cyan-800/60',
       codeColor: 'text-cyan-300',
       rulesEn: [
@@ -60,7 +60,7 @@ When a user provides or asks to audit a Docker Compose file:
       subtitle: 'Read on-demand only (Saves tokens & cost)',
       badge: 'Subdirectory: references/',
       badgeColor: 'bg-emerald-950 border-emerald-800 text-emerald-300',
-      icon: <BookOpen className="w-5 h-5 text-emerald-400" />,
+      icon: <BookOpen width={20} height={20} className="w-5 h-5 text-emerald-400" aria-hidden="true" />,
       borderHover: 'border-emerald-800/60',
       codeColor: 'text-emerald-300',
       rulesEn: [
@@ -90,7 +90,7 @@ Containers must not run as root.
       subtitle: 'Deterministic Automation (Python, Bash, Node)',
       badge: 'Subdirectory: scripts/',
       badgeColor: 'bg-purple-950 border-purple-800 text-purple-300',
-      icon: <Terminal className="w-5 h-5 text-purple-400" />,
+      icon: <Terminal width={20} height={20} className="w-5 h-5 text-purple-400" aria-hidden="true" />,
       borderHover: 'border-purple-800/60',
       codeColor: 'text-purple-300',
       rulesEn: [
@@ -134,7 +134,7 @@ if __name__ == '__main__':
       subtitle: 'Copied and adapted into user deliverables',
       badge: 'Subdirectory: assets/',
       badgeColor: 'bg-amber-950 border-amber-800 text-amber-300',
-      icon: <FolderOpen className="w-5 h-5 text-amber-400" />,
+      icon: <FolderOpen width={20} height={20} className="w-5 h-5 text-amber-400" aria-hidden="true" />,
       borderHover: 'border-amber-800/60',
       codeColor: 'text-amber-300',
       rulesEn: [
@@ -165,34 +165,35 @@ networks:
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-slate-900 border border-slate-800 p-4 sm:p-6 rounded-2xl shadow-xl">
-        <h2 className="text-lg sm:text-xl font-bold text-white mb-1 flex items-center gap-2">
-          <span>📖</span>
+      <section aria-labelledby="manual-header-title" className="bg-slate-900 border border-slate-800 p-4 sm:p-6 rounded-2xl shadow-xl">
+        <h2 id="manual-header-title" className="text-lg sm:text-xl font-bold text-white mb-1 flex items-center gap-2">
+          <span aria-hidden="true">📖</span>
           <span>{t.manualHeaderTitle}</span>
         </h2>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl">
           {t.manualHeaderSub}
         </p>
-      </div>
+      </section>
 
       {/* 4 Detailed Sections */}
-      <div className="space-y-6">
+      <section aria-label="Skill Architecture Blueprints" className="space-y-6">
         {manualSections.map((sec) => (
-          <div
+          <article
             key={sec.id}
+            aria-labelledby={`manual-${sec.id}-title`}
             className={`bg-slate-900 border ${sec.borderHover} rounded-2xl p-4 sm:p-6 shadow-xl code-glow`}
           >
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800 mb-4">
               <div className="flex items-center gap-3">
-                <span className="p-2 bg-slate-950 border border-slate-800 rounded-xl">
+                <span className="p-2 bg-slate-950 border border-slate-800 rounded-xl" aria-hidden="true">
                   {sec.icon}
                 </span>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                  <h3 id={`manual-${sec.id}-title`} className="text-sm sm:text-base font-bold text-white font-mono">
                     {sec.title}
                   </h3>
-                  <span className="text-xs text-cyan-400 font-medium">
+                  <span className="text-xs text-cyan-300 font-medium">
                     {sec.subtitle}
                   </span>
                 </div>
@@ -235,22 +236,26 @@ networks:
               {/* Code Sample Column */}
               <div className="lg:col-span-7 flex flex-col justify-between space-y-2">
                 <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex-1 flex flex-col">
-                  <div className="text-[11px] font-mono text-slate-400 pb-2 border-b border-slate-800 mb-2 flex items-center justify-between">
+                  <div className="text-[11px] font-mono text-slate-300 pb-2 border-b border-slate-800 mb-2 flex items-center justify-between">
                     <span className="truncate">{sec.path}</span>
                     <div className="flex items-center gap-2 shrink-0">
                       <button
+                        type="button"
                         onClick={() => handleCopy(sec.sampleCode)}
-                        className="text-slate-400 hover:text-white text-[11px] flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded"
+                        aria-label={`Copy ${sec.path} code sample`}
+                        className="text-slate-300 hover:text-white text-[11px] flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
                       >
-                        <Copy className="w-3 h-3" />
+                        <Copy width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                         <span>Copy</span>
                       </button>
                       <button
+                        type="button"
                         onClick={() => onSendToStudio(sec.path, sec.sampleCode)}
-                        className="text-cyan-400 hover:text-cyan-300 text-[11px] flex items-center gap-1 bg-cyan-950 border border-cyan-800 px-2 py-0.5 rounded font-mono active:scale-95 transition"
+                        aria-label={`Send ${sec.path} to Studio Editor`}
+                        className="text-cyan-300 hover:text-cyan-200 text-[11px] flex items-center gap-1 bg-cyan-950 border border-cyan-800 px-2 py-0.5 rounded font-mono active:scale-95 transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
                       >
                         <span>Send to Studio</span>
-                        <ArrowUpRight className="w-3 h-3" />
+                        <ArrowUpRight width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -262,9 +267,9 @@ networks:
                 </div>
               </div>
             </div>
-          </div>
+          </article>
         ))}
-      </div>
+      </section>
     </div>
   );
 };

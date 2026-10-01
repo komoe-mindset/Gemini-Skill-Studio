@@ -1,23 +1,36 @@
-import React, { useState, useMemo } from 'react';
-import JSZip from 'jszip';
+import React, { useState, useMemo, useTransition, Suspense, lazy } from 'react';
 import { Language, TabType, PreflightCheck } from './types';
 import { studioPresets } from './data/presets';
 import { translations } from './data/translations';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { StudioTab } from './components/StudioTab';
-import { AgentLoopTab } from './components/AgentLoopTab';
-import { ManualTab } from './components/ManualTab';
-import { ExplorerTab } from './components/ExplorerTab';
-import { PackagingTab } from './components/PackagingTab';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { Toast } from './components/Toast';
+import { TabLoadingSkeleton } from './components/TabLoadingSkeleton';
 import { Code2, GitFork, BookOpen, FolderTree, PackageCheck } from 'lucide-react';
+
+// Dynamic code-splitting for heavy non-critical UI views
+const AgentLoopTab = lazy(() =>
+  import('./components/AgentLoopTab').then((m) => ({ default: m.AgentLoopTab }))
+);
+const ManualTab = lazy(() =>
+  import('./components/ManualTab').then((m) => ({ default: m.ManualTab }))
+);
+const ExplorerTab = lazy(() =>
+  import('./components/ExplorerTab').then((m) => ({ default: m.ExplorerTab }))
+);
+const PackagingTab = lazy(() =>
+  import('./components/PackagingTab').then((m) => ({ default: m.PackagingTab }))
+);
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('both');
   const [activeTab, setActiveTab] = useState<TabType>('studio');
   const [selectedPreset, setSelectedPreset] = useState<string>('flow1');
+
+  // React 19 transition for non-blocking UI tab switches
+  const [, startTransition] = useTransition();
 
   // Active workspace state initialized with 'flow1' AI Video blueprint
   const [workspaceFiles, setWorkspaceFiles] = useState<Record<string, string>>(
@@ -42,7 +55,7 @@ export default function App() {
     }, 2800);
   };
 
-  // Preflight Diagnostic Engine
+  // Preflight Diagnostic Engine - Optimized to minimize main-thread execution
   const { preflightChecks, isAllValid } = useMemo(() => {
     const checks: PreflightCheck[] = [];
     let valid = true;
@@ -83,11 +96,13 @@ export default function App() {
     // 4. Cross-reference file integrity check
     const matches = skillContent.match(/(?:assets|references|scripts)\/[\w.-]+/g) || [];
     const missing: string[] = [];
-    matches.forEach((ref) => {
+    for (let i = 0; i < matches.length; i++) {
+      const ref = matches[i];
       if (!workspaceFiles[ref]) {
         missing.push(ref);
+        break; // Only report first missing for performance
       }
-    });
+    }
 
     const crossPassed = missing.length === 0;
     checks.push({
@@ -125,7 +140,7 @@ export default function App() {
     showToast('Workspace reset to empty baseline', '✨');
   };
 
-  // Update content of active file
+  // Update content of active file (called on debounced user edit)
   const handleUpdateContent = (newContent: string) => {
     setWorkspaceFiles((prev) => ({
       ...prev,
@@ -195,9 +210,13 @@ export default function App() {
     showToast(`Removed file: ${path}`, '🗑️');
   };
 
-  // Client-side ZIP generation
+  // Dynamic on-demand ZIP generation - JSZip is loaded ONLY when requested
   const handleExportZip = async () => {
     try {
+      showToast('Preparing archive package...', '⏳');
+      // Dynamic import of JSZip to save ~100KB on initial bundle load
+      const JSZipModule = await import('jszip');
+      const JSZip = JSZipModule.default || JSZipModule;
       const zip = new JSZip();
       const zipName = skillName.trim() || 'my-skill';
 
@@ -223,9 +242,16 @@ export default function App() {
     }
   };
 
+  // Tab switch with transition
+  const handleTabChange = (tab: TabType) => {
+    startTransition(() => {
+      setActiveTab(tab);
+    });
+  };
+
   // Navigate to explorer with node
   const handleSelectPillar = (tab: TabType, targetFile?: string) => {
-    setActiveTab(tab);
+    handleTabChange(tab);
     if (tab === 'explorer' && targetFile) {
       setExplorerNode(targetFile);
     } else if (tab === 'studio' && targetFile && workspaceFiles[targetFile]) {
@@ -242,22 +268,30 @@ export default function App() {
       return prev;
     });
     setActiveFilePath(filePath);
-    setActiveTab('studio');
+    handleTabChange('studio');
     showToast(`Opened ${filePath} in Studio Editor`, '✏️');
   };
 
   const t = translations[language];
 
   const primaryTabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
-    { id: 'studio', label: t.tabStudio, icon: <Code2 className="w-4 h-4" /> },
-    { id: 'agentloop', label: t.tabAgentLoop, icon: <GitFork className="w-4 h-4" /> },
-    { id: 'manual', label: t.tabManual, icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'explorer', label: t.tabExplorer, icon: <FolderTree className="w-4 h-4" /> },
-    { id: 'packaging', label: t.tabPackaging, icon: <PackageCheck className="w-4 h-4" /> }
+    { id: 'studio', label: t.tabStudio, icon: <Code2 width={16} height={16} className="w-4 h-4" aria-hidden="true" /> },
+    { id: 'agentloop', label: t.tabAgentLoop, icon: <GitFork width={16} height={16} className="w-4 h-4" aria-hidden="true" /> },
+    { id: 'manual', label: t.tabManual, icon: <BookOpen width={16} height={16} className="w-4 h-4" aria-hidden="true" /> },
+    { id: 'explorer', label: t.tabExplorer, icon: <FolderTree width={16} height={16} className="w-4 h-4" aria-hidden="true" /> },
+    { id: 'packaging', label: t.tabPackaging, icon: <PackageCheck width={16} height={16} className="w-4 h-4" aria-hidden="true" /> }
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+      {/* Keyboard Accessibility Skip Link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-slate-950 focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none"
+      >
+        Skip to main content
+      </a>
+
       {/* Top Header */}
       <Header
         language={language}
@@ -272,90 +306,108 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 w-full flex-1 pb-20 md:pb-10">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-7 w-full flex-1 pb-20 md:pb-10">
         {/* Desktop Primary Navigation Tabs */}
-        <div className="hidden md:flex border-b border-slate-800 mb-6 gap-2 overflow-x-auto scrollbar-none">
-          {primaryTabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-3 px-3 text-xs sm:text-sm font-semibold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors min-h-[44px] ${
-                  isActive
-                    ? 'border-cyan-400 text-cyan-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <nav aria-label="Main View Tabs" className="hidden md:flex border-b border-slate-800 mb-6 gap-2 overflow-x-auto scrollbar-none">
+          <div role="tablist" aria-label="Skill Studio primary views" className="flex gap-2">
+            {primaryTabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  id={`tab-${tab.id}`}
+                  aria-selected={isActive}
+                  aria-controls={`panel-${tab.id}`}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`pb-3 px-3 text-xs sm:text-sm font-semibold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
+                    isActive
+                      ? 'border-cyan-400 text-cyan-400'
+                      : 'border-transparent text-slate-300 hover:text-white'
+                  }`}
+                >
+                  <span aria-hidden="true">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-        {/* Tab 1: Studio */}
-        {activeTab === 'studio' && (
-          <StudioTab
-            language={language}
-            workspaceFiles={workspaceFiles}
-            activeFilePath={activeFilePath}
-            skillName={skillName}
-            skillDesc={skillDesc}
-            selectedPreset={selectedPreset}
-            preflightChecks={preflightChecks}
-            isAllValid={isAllValid}
-            onSelectFile={setActiveFilePath}
-            onUpdateContent={handleUpdateContent}
-            onUpdateMetadata={handleUpdateMetadata}
-            onLoadPreset={handleLoadPreset}
-            onResetEmpty={handleResetEmpty}
-            onAddFile={handleAddFile}
-            onDeleteFile={handleDeleteFile}
-            onExportZip={handleExportZip}
-            showToast={showToast}
-          />
-        )}
+        {/* Tab Content with Suspense, Role Tabpanel, and Zero-CLS Fallback */}
+        <section
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
+          tabIndex={0}
+          className="focus:outline-none"
+        >
+          <Suspense fallback={<TabLoadingSkeleton />}>
+            {/* Tab 1: Studio (Eagerly rendered as primary interface) */}
+            {activeTab === 'studio' && (
+              <StudioTab
+                language={language}
+                workspaceFiles={workspaceFiles}
+                activeFilePath={activeFilePath}
+                skillName={skillName}
+                skillDesc={skillDesc}
+                selectedPreset={selectedPreset}
+                preflightChecks={preflightChecks}
+                isAllValid={isAllValid}
+                onSelectFile={setActiveFilePath}
+                onUpdateContent={handleUpdateContent}
+                onUpdateMetadata={handleUpdateMetadata}
+                onLoadPreset={handleLoadPreset}
+                onResetEmpty={handleResetEmpty}
+                onAddFile={handleAddFile}
+                onDeleteFile={handleDeleteFile}
+                onExportZip={handleExportZip}
+                showToast={showToast}
+              />
+            )}
 
-        {/* Tab 2: Agent Loop */}
-        {activeTab === 'agentloop' && (
-          <AgentLoopTab
-            language={language}
-            showToast={showToast}
-          />
-        )}
+            {/* Tab 2: Agent Loop (Lazy loaded) */}
+            {activeTab === 'agentloop' && (
+              <AgentLoopTab
+                language={language}
+                showToast={showToast}
+              />
+            )}
 
-        {/* Tab 3: Manual */}
-        {activeTab === 'manual' && (
-          <ManualTab
-            language={language}
-            onSendToStudio={handleSendToStudio}
-            showToast={showToast}
-          />
-        )}
+            {/* Tab 3: Manual (Lazy loaded) */}
+            {activeTab === 'manual' && (
+              <ManualTab
+                language={language}
+                onSendToStudio={handleSendToStudio}
+                showToast={showToast}
+              />
+            )}
 
-        {/* Tab 4: Explorer */}
-        {activeTab === 'explorer' && (
-          <ExplorerTab
-            language={language}
-            initialNode={explorerNode}
-            showToast={showToast}
-          />
-        )}
+            {/* Tab 4: Explorer (Lazy loaded) */}
+            {activeTab === 'explorer' && (
+              <ExplorerTab
+                language={language}
+                initialNode={explorerNode}
+                showToast={showToast}
+              />
+            )}
 
-        {/* Tab 5: Packaging */}
-        {activeTab === 'packaging' && (
-          <PackagingTab
-            language={language}
-            onExportZip={handleExportZip}
-          />
-        )}
+            {/* Tab 5: Packaging (Lazy loaded) */}
+            {activeTab === 'packaging' && (
+              <PackagingTab
+                language={language}
+                onExportZip={handleExportZip}
+              />
+            )}
+          </Suspense>
+        </section>
       </main>
 
       {/* Mobile Ergonomic Bottom Tab Navigation */}
       <MobileBottomNav
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         language={language}
       />
 
@@ -367,18 +419,18 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800/80 py-6 mt-auto hidden md:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <footer aria-label="Site Footer" className="bg-slate-950 border-t border-slate-800/80 py-6 mt-auto pb-24 md:pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
           <div>
-            <p className="font-semibold text-slate-300">
+            <p className="font-semibold text-slate-200">
               Gemini Spark Skill Architect & Studio
             </p>
-            <p className="myanmar-text text-slate-400 text-[11px]">
+            <p className="myanmar-text text-slate-300 text-[11px]">
               Gemini Spark စွမ်းရည်တည်ဆောက်မှု အထောက်အကူပြု လမ်းညွှန်နှင့် Zip ဖန်တီးမှု စနစ်
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-400">
+            <span className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 font-mono text-[11px] text-cyan-300">
               Agent Skills Open Spec Standard
             </span>
           </div>

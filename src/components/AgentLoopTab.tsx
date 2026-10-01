@@ -7,13 +7,7 @@ import {
   Square,
   Copy,
   Terminal,
-  CheckCircle2,
-  Lightbulb,
-  FileCode,
-  FolderOpen,
-  BookOpen,
-  ArrowRight,
-  RotateCcw
+  Lightbulb
 } from 'lucide-react';
 
 interface AgentLoopTabProps {
@@ -82,14 +76,17 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
   return (
     <div className="space-y-6">
       {/* Top Overview Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-4 sm:p-6 rounded-2xl relative overflow-hidden shadow-xl">
+      <section
+        aria-labelledby="agent-loop-heading"
+        className="bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-4 sm:p-6 rounded-2xl relative overflow-hidden shadow-xl"
+      >
         <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 text-xs font-medium mb-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
               <span>{t.agentLoopBadge}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+            <h2 id="agent-loop-heading" className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
               {t.agentLoopTitle}
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
@@ -99,8 +96,10 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
+              type="button"
               onClick={handleStartSimulation}
-              className={`w-full sm:w-auto font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95 min-h-[44px] ${
+              aria-label={isSimulating ? "Stop agent loop simulation" : "Start full agent loop simulation"}
+              className={`w-full sm:w-auto font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
                 isSimulating
                   ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/20'
                   : 'bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white shadow-cyan-500/20'
@@ -108,52 +107,62 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             >
               {isSimulating ? (
                 <>
-                  <Square className="w-4 h-4" />
+                  <Square width={16} height={16} className="w-4 h-4" aria-hidden="true" />
                   <span>Stop Simulation</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-4 h-4 fill-white" />
+                  <Play width={16} height={16} className="w-4 h-4 fill-white" aria-hidden="true" />
                   <span>{t.simBtn}</span>
                 </>
               )}
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Live Simulation Terminal Console (Shows when simulating or logs present) */}
       {(isSimulating || simLogs.length > 0) && (
-        <div className="bg-black/95 border border-cyan-700/60 rounded-2xl p-4 sm:p-5 font-mono text-xs text-slate-300 space-y-3 shadow-2xl code-glow animate-in fade-in duration-200">
+        <section
+          aria-label="Simulation Output Log"
+          className="bg-black/95 border border-cyan-700/60 rounded-2xl p-4 sm:p-5 font-mono text-xs text-slate-300 space-y-3 shadow-2xl code-glow animate-in fade-in duration-200"
+        >
           <div className="flex items-center justify-between pb-2 border-b border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-              <span className="text-slate-400 text-xs ml-2 flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" aria-hidden="true" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" aria-hidden="true" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />
+              <span className="text-slate-300 text-xs ml-2 flex items-center gap-1.5">
+                <Terminal width={14} height={14} className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                 <span>Gemini Agent Loop Execution Runtime</span>
               </span>
             </div>
             <button
+              type="button"
               onClick={() => {
                 handleStopSimulation();
                 setSimLogs([]);
               }}
-              className="text-slate-400 hover:text-white text-xs px-2 py-1 rounded bg-slate-900 border border-slate-800"
+              aria-label="Close simulation terminal"
+              className="text-slate-300 hover:text-white text-xs px-2.5 py-1 rounded bg-slate-900 border border-slate-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
             >
               Close
             </button>
           </div>
 
-          <div className="space-y-1.5 min-h-[120px] max-h-56 overflow-y-auto pr-1">
+          <div
+            role="log"
+            aria-live="polite"
+            aria-atomic="false"
+            className="space-y-1.5 min-h-[120px] max-h-56 overflow-y-auto pr-1"
+          >
             {simLogs.map((log, idx) => (
               <div
                 key={idx}
                 className={`font-mono text-xs leading-relaxed ${
                   idx === simLogs.length - 1
                     ? 'text-cyan-300 font-semibold animate-pulse'
-                    : 'text-slate-400'
+                    : 'text-slate-300'
                 }`}
               >
                 {log}
@@ -161,16 +170,16 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             ))}
             <div ref={simLogEndRef} />
           </div>
-        </div>
+        </section>
       )}
 
       {/* 8-Step Grid (Responsive for Mobile Swipe / Scroll) */}
-      <div>
+      <section aria-labelledby="loop-steps-grid-heading">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <span>🔄</span>
+          <h2 id="loop-steps-grid-heading" className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <span aria-hidden="true">🔄</span>
             <span>{t.loopGridHeader}</span>
-          </span>
+          </h2>
           <span className="text-xs font-mono text-cyan-400 font-semibold bg-cyan-950/70 border border-cyan-800 px-2.5 py-0.5 rounded-lg">
             Step 0{selectedStep} Selected
           </span>
@@ -181,10 +190,14 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             const step = agentLoopStepsData[stepNum];
             const isSelected = selectedStep === stepNum;
             return (
-              <div
+              <button
                 key={stepNum}
+                type="button"
+                role="button"
+                aria-pressed={isSelected}
+                aria-label={`Step 0${stepNum}: ${language === 'my' ? step.titleMy : step.titleEn}`}
                 onClick={() => setSelectedStep(stepNum)}
-                className={`p-3.5 sm:p-4 rounded-2xl cursor-pointer transition-all duration-200 border-2 relative group active:scale-98 ${
+                className={`p-3.5 sm:p-4 rounded-2xl cursor-pointer transition-all duration-200 border-2 relative group active:scale-98 text-left w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
                   isSelected
                     ? 'bg-slate-900 border-cyan-500 shadow-lg shadow-cyan-500/10'
                     : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
@@ -193,17 +206,17 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
                 <div className="flex items-center justify-between mb-2">
                   <span
                     className={`text-xs font-mono font-bold ${
-                      isSelected ? 'text-cyan-400' : 'text-slate-400 group-hover:text-cyan-300'
+                      isSelected ? 'text-cyan-400' : 'text-slate-300 group-hover:text-cyan-300'
                     }`}
                   >
                     0{stepNum}
                   </span>
-                  <span className="text-2xl">{step.icon}</span>
+                  <span className="text-2xl" aria-hidden="true">{step.icon}</span>
                 </div>
 
-                <h4 className="font-bold text-white text-sm mb-0.5">
+                <h3 className="font-bold text-white text-sm mb-0.5">
                   {language === 'my' ? step.titleMy.split(' ')[0] : step.titleEn.split(' ')[0]}
-                </h4>
+                </h3>
 
                 <p className="text-[11px] text-slate-300 mb-2 leading-snug line-clamp-1">
                   {language === 'my' ? step.questionMy : step.questionEn}
@@ -222,21 +235,21 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
                   <span className="text-cyan-400 truncate max-w-[120px]">
                     {step.mapping.split(':')[1]?.trim() || step.mapping}
                   </span>
-                  <span className="text-slate-400 font-sans text-[9px] bg-slate-800 px-1.5 py-0.5 rounded">
+                  <span className="text-slate-300 font-sans text-[9px] bg-slate-800 px-1.5 py-0.5 rounded">
                     linked
                   </span>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
-      </div>
+      </section>
 
       {/* Selected Step Deep Dive Details */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl code-glow">
+      <article aria-labelledby="step-deep-dive-title" className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl code-glow">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800 mb-5">
           <div className="flex items-center gap-3">
-            <span className="text-3xl p-2.5 bg-slate-950 border border-slate-800 rounded-xl shrink-0">
+            <span className="text-3xl p-2.5 bg-slate-950 border border-slate-800 rounded-xl shrink-0" aria-hidden="true">
               {activeStepData.icon}
             </span>
             <div>
@@ -244,7 +257,7 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
                 <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800">
                   {activeStepData.num}
                 </span>
-                <h3 className="text-base sm:text-lg font-bold text-white">
+                <h3 id="step-deep-dive-title" className="text-base sm:text-lg font-bold text-white">
                   {language === 'my'
                     ? activeStepData.titleMy
                     : language === 'en'
@@ -272,7 +285,8 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             {(language === 'en' || language === 'both') && (
               <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
                 <div className="flex items-center gap-2 text-xs font-bold text-cyan-300 uppercase tracking-wide mb-1.5">
-                  <span>🇺🇸</span> How this Step Works in Gemini Spark
+                  <span aria-hidden="true">🇺🇸</span>
+                  <span>How this Step Works in Gemini Spark</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {activeStepData.descEn}
@@ -284,7 +298,8 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             {(language === 'my' || language === 'both') && (
               <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wide mb-1.5">
-                  <span>🇲🇲</span> မြန်မာလို အဓိပ္ပာယ်ရှင်းလင်းချက်
+                  <span aria-hidden="true">🇲🇲</span>
+                  <span>မြန်မာလို အဓိပ္ပာယ်ရှင်းလင်းချက်</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed myanmar-text">
                   {activeStepData.descMy}
@@ -297,14 +312,16 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
           <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
             <div className="bg-slate-950 rounded-xl border border-slate-800 p-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-2">
-                <span className="text-xs font-mono font-bold text-slate-400">
+                <span className="text-xs font-mono font-bold text-slate-300">
                   {activeStepData.filename}
                 </span>
                 <button
+                  type="button"
                   onClick={handleCopyCode}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded"
+                  aria-label="Copy step code example"
+                  className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 bg-slate-900 border border-slate-800 px-2 py-1 rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400"
                 >
-                  <Copy className="w-3 h-3" />
+                  <Copy width={12} height={12} className="w-3 h-3" aria-hidden="true" />
                   <span>Copy</span>
                 </button>
               </div>
@@ -314,7 +331,7 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             </div>
 
             <div className="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-800/70 text-xs text-slate-300 flex items-start gap-2.5">
-              <Lightbulb className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <Lightbulb width={16} height={16} className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" aria-hidden="true" />
               <div>
                 <strong className="text-cyan-300 block mb-0.5">
                   {activeStepData.tipTitle}
@@ -326,7 +343,7 @@ export const AgentLoopTab: React.FC<AgentLoopTabProps> = ({ language, showToast 
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </div>
   );
 };
