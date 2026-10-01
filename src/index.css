@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Inter', 'Padauk', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.myanmar-text {
+  font-family: 'Padauk', 'Inter', sans-serif;
+  line-height: 1.85;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #273549;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+.code-glow {
+  box-shadow: 0 0 35px -8px rgba(6, 182, 212, 0.2);
+}
+
+/* Safe area padding for mobile bottom bar */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
