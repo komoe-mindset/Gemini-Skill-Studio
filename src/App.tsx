@@ -341,7 +341,7 @@ export default function App() {
           id={`panel-${activeTab}`}
           aria-labelledby={`tab-${activeTab}`}
           tabIndex={0}
-          className="focus:outline-none"
+          className="focus:outline-none min-h-[580px]"
         >
           <Suspense fallback={<TabLoadingSkeleton />}>
             {/* Tab 1: Studio (Eagerly rendered as primary interface) */}
